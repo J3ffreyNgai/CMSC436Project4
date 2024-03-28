@@ -9,6 +9,7 @@ class GameTimerTask : TimerTask {
         this.activity = activity
     }
     override fun run() {
+        activity.updateBall()
         activity.updateView( )
     }
 }

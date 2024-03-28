@@ -44,6 +44,11 @@ class MainActivity : AppCompatActivity() {
         var x : Float = e.x
         pong.updateBarPosition(x)
     }
+
+    fun updateBall() {
+        pong.updateBallPosition()
+    }
+
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if( event != null )
             detector.onTouchEvent( event )
@@ -60,6 +65,15 @@ class MainActivity : AppCompatActivity() {
             Log.w("Main" , "Scroll")
             updateBar(e2)
             return super.onScroll(e1, e2, distanceX, distanceY)
+        }
+
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            Log.w("Main", "Single Tap")
+
+            if ( ! pong.isGameStarted() ) {
+                pong.startGame(e.x, gameView.width)
+            }
+            return super.onSingleTapConfirmed(e)
         }
     }
 
