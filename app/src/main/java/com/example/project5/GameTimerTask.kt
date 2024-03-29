@@ -11,5 +11,6 @@ class GameTimerTask : TimerTask {
     override fun run() {
         activity.updateBall()
         activity.updateView( )
+        activity.checkCollision()
     }
 }

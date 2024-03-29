@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Point
+import android.graphics.Rect
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -23,10 +24,10 @@ class GameView : View {
         paint.strokeWidth = 20.0f
         this.height = height
         this.width = width
-
+        val gameRect = Rect(0, 0, width, height)
         pong = Pong((width / 2.0f), 50.0f, 40.0f,
             5, 5, (width / 2.0f) - (150.0f / 2.0f),
-            (width / 2.0f) + (150.0f / 2.0f), height - 50.0f, 5, 45.0f)
+            (width / 2.0f) + (150.0f / 2.0f), height - 50.0f, 5, 45.0f,gameRect)
     }
 
     override fun onDraw(canvas: Canvas) {

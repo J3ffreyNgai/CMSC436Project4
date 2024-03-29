@@ -1,5 +1,6 @@
 package com.example.project5
 
+import android.graphics.Rect
 import android.util.Log
 class Pong {
     private var barStartX = 0.0f
@@ -14,11 +15,13 @@ class Pong {
     private var ballSpeedY = 0
     private var hitCollision = false
     private var gameStarted = false
+    private var gameRect : Rect? = null
 
     constructor(newBallX : Float, newBallY : Float, newBallRadius : Float, newBallSpeedX : Int, newBallSpeedY : Int,
-        newBarStartX : Float, newBarEndX : Float, newBarY : Float, newBarSpeed: Int, newBallAngel : Float) {
+        newBarStartX : Float, newBarEndX : Float, newBarY : Float, newBarSpeed: Int, newBallAngel : Float, newGameRect : Rect?) {
         setBarLocation(newBarStartX, newBarEndX, newBarY)
         setBallLocation(newBallX, newBallY, newBallRadius)
+        gameRect = newGameRect
     }
 
     fun setBarLocation(newBarStartX : Float, newBarEndX : Float, newBarY : Float) {
@@ -64,6 +67,14 @@ class Pong {
         barSpeed = newBarSpeed
     }
 
+    fun ballCollisionWall(){
+        if(ballX <= 0 || ballX >= gameRect!!.width()) {
+            ballSpeedX *= -1
+        }
+        if(ballY <= 0){
+            ballSpeedY *= -1
+        }
+    }
     fun getBarStartX() : Float {
         return barStartX
     }

@@ -49,6 +49,10 @@ class MainActivity : AppCompatActivity() {
         pong.updateBallPosition()
     }
 
+    fun checkCollision() {
+        pong.ballCollisionWall()
+    }
+
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if( event != null )
             detector.onTouchEvent( event )
