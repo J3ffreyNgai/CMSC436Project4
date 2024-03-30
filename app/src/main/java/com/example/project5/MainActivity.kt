@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         var gameTimer : Timer = Timer( )
         var task : GameTimerTask = GameTimerTask( this )
-        gameTimer.schedule( task, 0L, 100L )
+        gameTimer.schedule( task, 0L, 10L )
     }
 
     fun updateView( ) {
@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
 
     fun checkCollision() {
         pong.ballCollisionWall()
+        pong.ballCollisionBar()
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {

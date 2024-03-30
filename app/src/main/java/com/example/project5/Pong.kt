@@ -54,9 +54,9 @@ class Pong {
 
         Log.w("Pong", "Game Started")
         if (x < width / 2) {
-            ballSpeedX = -10
+            ballSpeedX = -5
         } else if (x > width / 2){
-            ballSpeedX = 10
+            ballSpeedX = 5
         }
         ballSpeedY = 10
 //        ballAngle = (Math.PI / 4).toFloat()
@@ -73,6 +73,13 @@ class Pong {
         }
         if(ballY <= 0){
             ballSpeedY *= -1
+        }
+    }
+
+    fun ballCollisionBar() {
+        if(ballX in barStartX..barEndX && ballY == barY) {
+            ballSpeedY *= -1
+            ballSpeedX *= -1
         }
     }
     fun getBarStartX() : Float {
