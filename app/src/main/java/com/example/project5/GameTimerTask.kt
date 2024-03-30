@@ -12,5 +12,6 @@ class GameTimerTask : TimerTask {
         activity.updateBall()
         activity.updateView( )
         activity.checkCollision()
+        activity.gameReset()
     }
 }

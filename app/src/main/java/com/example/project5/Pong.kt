@@ -13,9 +13,10 @@ class Pong {
     private var ballAngle = 0.0f
     private var ballSpeedX = 0
     private var ballSpeedY = 0
-    private var hitCollision = false
     private var gameStarted = false
     private var gameRect : Rect? = null
+    private var gameOver = false
+    private var score = 0
 
     constructor(newBallX : Float, newBallY : Float, newBallRadius : Float, newBallSpeedX : Int, newBallSpeedY : Int,
         newBarStartX : Float, newBarEndX : Float, newBarY : Float, newBarSpeed: Int, newBallAngel : Float, newGameRect : Rect?) {
@@ -28,6 +29,12 @@ class Pong {
         barStartX = newBarStartX
         barEndX = newBarEndX
         barY = newBarY
+    }
+
+    fun resetBall() {
+        setBallLocation((gameRect!!.width() / 2.0f), 50.0f, radius)
+        ballSpeedX = 0
+        ballSpeedY = 0
     }
 
     fun setBallLocation(newBallX: Float, newBallY: Float, newBallRadius: Float) {
@@ -45,13 +52,10 @@ class Pong {
     fun updateBallPosition() {
         ballX += ballSpeedX
         ballY += ballSpeedY
-        Log.w("Pong", ballX.toString())
-        Log.w("Pong", ballY.toString())
     }
 
     fun startGame(x: Float, width: Int) {
         gameStarted = true
-
         Log.w("Pong", "Game Started")
         if (x < width / 2) {
             ballSpeedX = -5
@@ -63,9 +67,6 @@ class Pong {
         updateBallPosition()
     }
 
-    fun setBarSpeed(newBarSpeed : Int) {
-        barSpeed = newBarSpeed
-    }
 
     fun ballCollisionWall(){
         if(ballX <= 0 || ballX >= gameRect!!.width()) {
@@ -75,11 +76,22 @@ class Pong {
             ballSpeedY *= -1
         }
     }
+    fun gameOverCheck(){
+        if (ballY >= gameRect!!.height()) {
+            gameOver = true
+            gameStarted = false
+            score = 0
+        } else {
+            gameOver = false
+        }
+    }
 
     fun ballCollisionBar() {
         if(ballX in barStartX..barEndX && ballY == barY) {
             ballSpeedY *= -1
             ballSpeedX *= -1
+            score += 1
+            Log.w("Pong", score.toString())
         }
     }
     fun getBarStartX() : Float {
@@ -108,5 +120,9 @@ class Pong {
 
     fun isGameStarted() : Boolean {
         return gameStarted
+    }
+
+    fun isGameOver() : Boolean {
+        return gameOver
     }
 }

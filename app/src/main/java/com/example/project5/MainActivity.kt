@@ -54,6 +54,14 @@ class MainActivity : AppCompatActivity() {
         pong.ballCollisionBar()
     }
 
+    fun gameReset() {
+        pong.gameOverCheck()
+        if(pong.isGameOver()) {
+            Log.w("main", "over")
+            pong.resetBall()
+        }
+    }
+
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if( event != null )
             detector.onTouchEvent( event )
@@ -67,7 +75,6 @@ class MainActivity : AppCompatActivity() {
             distanceX: Float,
             distanceY: Float
         ): Boolean {
-            Log.w("Main" , "Scroll")
             updateBar(e2)
             return super.onScroll(e1, e2, distanceX, distanceY)
         }

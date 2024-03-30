@@ -43,10 +43,6 @@ class GameView : View {
         canvas.drawCircle(pong.getBallX(), pong.getBallY(), pong.getRadius().toFloat(), paint)
     }
 
-    fun updateBar (e : MotionEvent) {
-        Log.w("GameView", "Inside updateBar")
-    }
-
     fun getPong( ) : Pong {
         return pong
     }
