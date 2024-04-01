@@ -1,8 +1,21 @@
 package com.example.project5
 
+import android.content.SharedPreferences
 import android.graphics.Rect
 import android.util.Log
-class Pong {
+class Pong(
+    newBallX: Float,
+    newBallY: Float,
+    newBallRadius: Float,
+    newBallSpeedX: Int,
+    newBallSpeedY: Int,
+    newBarStartX: Float,
+    newBarEndX: Float,
+    newBarY: Float,
+    newBarSpeed: Int,
+    newBallAngel: Float,
+    newGameRect: Rect?
+) {
     private var barStartX = 0.0f
     private var barEndX = 0.0f
     private var barY = 0.0f
@@ -14,18 +27,17 @@ class Pong {
     private var ballSpeedX = 0
     private var ballSpeedY = 0
     private var gameStarted = false
-    private var gameRect : Rect? = null
+    private var gameRect : Rect? = newGameRect
     private var gameOver = false
     private var score = 0
+    private var bestScore: Int = 0
 
-    constructor(newBallX : Float, newBallY : Float, newBallRadius : Float, newBallSpeedX : Int, newBallSpeedY : Int,
-        newBarStartX : Float, newBarEndX : Float, newBarY : Float, newBarSpeed: Int, newBallAngel : Float, newGameRect : Rect?) {
+    init {
         setBarLocation(newBarStartX, newBarEndX, newBarY)
         setBallLocation(newBallX, newBallY, newBallRadius)
-        gameRect = newGameRect
     }
 
-    fun setBarLocation(newBarStartX : Float, newBarEndX : Float, newBarY : Float) {
+    private fun setBarLocation(newBarStartX : Float, newBarEndX : Float, newBarY : Float) {
         barStartX = newBarStartX
         barEndX = newBarEndX
         barY = newBarY
@@ -37,7 +49,11 @@ class Pong {
         ballSpeedY = 0
     }
 
-    fun setBallLocation(newBallX: Float, newBallY: Float, newBallRadius: Float) {
+    fun resetScore() {
+        score = 0
+    }
+
+    private fun setBallLocation(newBallX: Float, newBallY: Float, newBallRadius: Float) {
         ballX = newBallX
         ballY = newBallY
         radius = newBallRadius
@@ -63,10 +79,8 @@ class Pong {
             ballSpeedX = 5
         }
         ballSpeedY = 10
-//        ballAngle = (Math.PI / 4).toFloat()
         updateBallPosition()
     }
-
 
     fun ballCollisionWall(){
         if(ballX <= 0 || ballX >= gameRect!!.width()) {
@@ -80,14 +94,14 @@ class Pong {
         if (ballY >= gameRect!!.height()) {
             gameOver = true
             gameStarted = false
-            score = 0
         } else {
             gameOver = false
         }
     }
 
     fun ballCollisionBar() {
-        if(ballX in barStartX..barEndX && ballY == barY) {
+        val collisionThreshold = 5
+        if (ballX in barStartX..barEndX && ballY + radius >= barY - collisionThreshold && ballY - radius <= barY + collisionThreshold) {
             ballSpeedY *= -1
             ballSpeedX *= -1
             score += 1
@@ -124,5 +138,23 @@ class Pong {
 
     fun isGameOver() : Boolean {
         return gameOver
+    }
+
+    fun updateBestScore(sharedPreferences: SharedPreferences) {
+        val editor = sharedPreferences.edit()
+        if (score > bestScore) {
+            bestScore = score
+            editor.putInt("BEST_SCORE", bestScore)
+            editor.apply()
+        }
+    }
+
+    fun getScore() : Int {
+        return score
+    }
+
+    fun getBestScore(sharedPreferences: SharedPreferences): Int {
+        bestScore = sharedPreferences.getInt("BEST_SCORE", 0)
+        return bestScore
     }
 }

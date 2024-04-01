@@ -4,26 +4,20 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Point
 import android.graphics.Rect
-import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 
-class GameView : View {
+class GameView(context: Context, private var width: Int, private var height: Int) : View(context) {
     private lateinit var paint : Paint
-    private var height = 0
-    private var width = 0
     private lateinit var pong : Pong
-    private var barStartX = 0
+    private var currentScoreText: String? = null
+    private var bestScoreText: String? = null
 
-    constructor(context : Context, width : Int, height : Int) : super(context) {
+    init {
         paint = Paint()
         paint.color = Color.BLACK
         paint.isAntiAlias = true
         paint.strokeWidth = 20.0f
-        this.height = height
-        this.width = width
         val gameRect = Rect(0, 0, width, height)
         pong = Pong((width / 2.0f), 50.0f, 40.0f,
             5, 5, (width / 2.0f) - (150.0f / 2.0f),
@@ -34,13 +28,40 @@ class GameView : View {
         super.onDraw(canvas)
 
         canvas.drawLine(pong.getBarStartX(), pong.getBarY(), pong.getBarEndX(), pong.getBarY(), paint)
-
-//        val ballStartX = (width / 2.0f)
-//        val ballYPosition = 50.0f
-//        val ballRadius = 40.0f
-//        canvas.drawCircle(ballStartX, ballYPosition, ballRadius,paint)
-
         canvas.drawCircle(pong.getBallX(), pong.getBallY(), pong.getRadius().toFloat(), paint)
+
+        currentScoreText?.let {
+            val textPaint = Paint().apply {
+                color = Color.BLACK
+                textSize = 75.0f
+                textAlign = Paint.Align.CENTER
+            }
+            canvas.drawText(it, (width / 2).toFloat(), (height / 2).toFloat() - 75, textPaint)
+        }
+
+        bestScoreText?.let {
+            val textPaint = Paint().apply {
+                color = Color.BLACK
+                textSize = 75.0f
+                textAlign = Paint.Align.CENTER
+            }
+            canvas.drawText(it, (width / 2).toFloat(), (height / 2).toFloat() + 75, textPaint)
+        }
+    }
+    fun setScoreText(score: Int?) {
+        currentScoreText = "Score: $score"
+    }
+
+    fun clearScoreText() {
+        currentScoreText = null
+    }
+
+    fun setBestScoreText(score: Int?) {
+        bestScoreText = "Best Score: $score"
+    }
+
+    fun clearBestScoreText() {
+        bestScoreText = null
     }
 
     fun getPong( ) : Pong {

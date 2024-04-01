@@ -1,5 +1,7 @@
 package com.example.project5
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,29 +13,32 @@ class MainActivity : AppCompatActivity() {
     private lateinit var gameView: GameView
     private lateinit var detector : GestureDetector
     private lateinit var pong : Pong
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var width : Int = resources.displayMetrics.widthPixels
-        var height : Int = resources.displayMetrics.heightPixels
+        val width : Int = resources.displayMetrics.widthPixels
+        val height : Int = resources.displayMetrics.heightPixels
 
-        var statusBarHeightId : Int =
+        val statusBarHeightId : Int =
             resources.getIdentifier("status_bar_height","dimen", "android")
 
-        var statusBarHeight : Int = resources.getDimensionPixelSize(statusBarHeightId)
+        val statusBarHeight : Int = resources.getDimensionPixelSize(statusBarHeightId)
 
         gameView = GameView(this, width, height - statusBarHeight)
         setContentView(gameView)
         pong = gameView.getPong()
 
-        var th : TouchHandler = TouchHandler()
+        sharedPreferences = getSharedPreferences("PONG_PREFS", Context.MODE_PRIVATE)
+
+        val th : TouchHandler = TouchHandler()
         detector = GestureDetector( this, th )
         detector.setOnDoubleTapListener( th )
 
-        var gameTimer : Timer = Timer( )
-        var task : GameTimerTask = GameTimerTask( this )
+        val gameTimer : Timer = Timer( )
+        val task : GameTimerTask = GameTimerTask( this )
         gameTimer.schedule( task, 0L, 10L )
     }
 
@@ -41,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         gameView.postInvalidate()
     }
     fun updateBar(e : MotionEvent) {
-        var x : Float = e.x
+        val x : Float = e.x
         pong.updateBarPosition(x)
     }
 
@@ -54,11 +59,23 @@ class MainActivity : AppCompatActivity() {
         pong.ballCollisionBar()
     }
 
+    fun checkGameOver() {
+        pong.gameOverCheck()
+        if ( pong.isGameOver() ) {
+            gameView.setScoreText(pong.getScore())
+            gameView.setBestScoreText(pong.getBestScore(sharedPreferences))
+        }
+    }
+
     fun gameReset() {
         pong.gameOverCheck()
         if(pong.isGameOver()) {
-            Log.w("main", "over")
+            Log.w("main", "Game Over")
+            pong.updateBestScore(sharedPreferences)
+            gameView.clearScoreText()
+            gameView.clearBestScoreText()
             pong.resetBall()
+            pong.resetScore()
         }
     }
 
@@ -80,10 +97,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            Log.w("Main", "Single Tap")
-
+//            Log.w("Main", "Single Tap")
             if ( ! pong.isGameStarted() ) {
                 pong.startGame(e.x, gameView.width)
+                val bestScore = pong.getBestScore(sharedPreferences)
+                Log.w("Pong", "Best Score: $bestScore")
+            }
+
+            if ( pong.isGameOver() ) {
+                gameReset()
             }
             return super.onSingleTapConfirmed(e)
         }
