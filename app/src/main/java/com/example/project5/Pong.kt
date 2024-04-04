@@ -7,23 +7,17 @@ class Pong(
     newBallX: Float,
     newBallY: Float,
     newBallRadius: Float,
-    newBallSpeedX: Int,
-    newBallSpeedY: Int,
     newBarStartX: Float,
     newBarEndX: Float,
     newBarY: Float,
-    newBarSpeed: Int,
-    newBallAngel: Float,
     newGameRect: Rect?
 ) {
     private var barStartX = 0.0f
     private var barEndX = 0.0f
     private var barY = 0.0f
-    private var barSpeed = 0
     private var ballX = 0.0f
     private var ballY = 0.0f
     private var radius = 0.0f
-    private var ballAngle = 0.0f
     private var ballSpeedX = 0
     private var ballSpeedY = 0
     private var gameStarted = false
@@ -100,7 +94,7 @@ class Pong(
     }
 
     fun ballCollisionBar() {
-        val collisionThreshold = 5
+        val collisionThreshold = 10
         if (ballX in barStartX..barEndX && ballY + radius >= barY - collisionThreshold && ballY - radius <= barY + collisionThreshold) {
             ballSpeedY *= -1
             ballSpeedX *= -1
@@ -156,5 +150,13 @@ class Pong(
     fun getBestScore(sharedPreferences: SharedPreferences): Int {
         bestScore = sharedPreferences.getInt("BEST_SCORE", 0)
         return bestScore
+    }
+
+    fun paddleHit(): Boolean {
+        val collisionThreshold = 10
+        return (ballX + radius >= barStartX - collisionThreshold &&
+                ballX - radius <= barEndX + collisionThreshold &&
+                ballY + radius >= barY - collisionThreshold &&
+                ballY - radius <= barY + collisionThreshold)
     }
 }

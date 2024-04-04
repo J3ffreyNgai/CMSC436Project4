@@ -1,7 +1,7 @@
 package com.example.project5
 
-import android.content.Context
 import android.content.SharedPreferences
+import android.media.SoundPool
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +14,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var detector : GestureDetector
     private lateinit var pong : Pong
     private lateinit var sharedPreferences: SharedPreferences
+
+    private lateinit var pool : SoundPool
+    private var paddleHitId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(gameView)
         pong = gameView.getPong()
 
-        sharedPreferences = getSharedPreferences("PONG_PREFS", Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences("PONG_PREFS", MODE_PRIVATE)
 
         val th : TouchHandler = TouchHandler()
         detector = GestureDetector( this, th )
@@ -40,6 +43,10 @@ class MainActivity : AppCompatActivity() {
         val gameTimer : Timer = Timer( )
         val task : GameTimerTask = GameTimerTask( this )
         gameTimer.schedule( task, 0L, 10L )
+
+        var builder : SoundPool.Builder = SoundPool.Builder( )
+        pool = builder.build()
+        paddleHitId = pool.load( this, R.raw.hit, 1 )
     }
 
     fun updateView( ) {
@@ -52,6 +59,9 @@ class MainActivity : AppCompatActivity() {
 
     fun updateBall() {
         pong.updateBallPosition()
+        if(pong.paddleHit()) {
+            playSound(paddleHitId)
+        }
     }
 
     fun checkCollision() {
@@ -83,6 +93,10 @@ class MainActivity : AppCompatActivity() {
         if( event != null )
             detector.onTouchEvent( event )
         return super.onTouchEvent(event)
+    }
+
+    fun playSound( soundId : Int ) {
+        pool.play( soundId, 1.0f, 1.0f, 0, 0, 1.0f )
     }
 
     inner class TouchHandler : GestureDetector.SimpleOnGestureListener() {

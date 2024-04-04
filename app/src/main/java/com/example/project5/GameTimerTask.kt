@@ -13,6 +13,5 @@ class GameTimerTask : TimerTask {
         activity.updateView( )
         activity.checkCollision()
         activity.checkGameOver()
-//        activity.gameReset()
     }
 }

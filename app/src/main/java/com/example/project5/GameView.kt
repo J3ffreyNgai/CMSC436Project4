@@ -19,9 +19,8 @@ class GameView(context: Context, private var width: Int, private var height: Int
         paint.isAntiAlias = true
         paint.strokeWidth = 20.0f
         val gameRect = Rect(0, 0, width, height)
-        pong = Pong((width / 2.0f), 50.0f, 40.0f,
-            5, 5, (width / 2.0f) - (150.0f / 2.0f),
-            (width / 2.0f) + (150.0f / 2.0f), height - 50.0f, 5, 45.0f,gameRect)
+        pong = Pong((width / 2.0f), 50.0f, 25.0f, (width / 2.0f) - (150.0f / 2.0f),
+            (width / 2.0f) + (150.0f / 2.0f), height - 50.0f, gameRect)
     }
 
     override fun onDraw(canvas: Canvas) {
